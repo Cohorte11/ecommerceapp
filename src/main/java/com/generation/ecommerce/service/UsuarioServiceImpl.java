@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +19,11 @@ public class UsuarioServiceImpl implements UsuarioService{
     @Override
     public Usuario guardarUsuario(Usuario nuevoUsuario) {
         return usuarioRepository.save(nuevoUsuario);
+    }
+
+    @Override
+    public List<Usuario> buscarUsuarios() {
+        return usuarioRepository.findAll();
     }
 
     public Optional<Usuario> buscarUsuarioPorUsername(String username) {

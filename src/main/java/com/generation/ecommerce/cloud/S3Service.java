@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class S3Service {
@@ -93,6 +95,30 @@ public class S3Service {
         if (key != null) {
             deleteFile(key); // Eliminar el archivo usando la clave
         }
+    }
+
+    public List<String> getAllImageUrls() {
+        List<String> imageUrls = new ArrayList<>();
+
+        ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .build();
+
+        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listRequest);
+        List<S3Object> objects = listResponse.contents();
+
+        for (S3Object object : objects) {
+            String key = object.key();
+            String fileUrl = s3Client.utilities().getUrl(GetUrlRequest.builder()
+                            .bucket(bucketName)
+                            .key(key)
+                            .build())
+                    .toExternalForm();
+
+                imageUrls.add(fileUrl);
+
+        }
+        return imageUrls;
     }
 
 }

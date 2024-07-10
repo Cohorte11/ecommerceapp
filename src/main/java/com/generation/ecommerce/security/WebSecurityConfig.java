@@ -56,13 +56,12 @@ public class WebSecurityConfig {
     // Define un bean para la cadena de filtros de seguridad HTTP
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // Deshabilita la protección CSRF
+        http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable()) // Deshabilita la protección CSRF y CORS
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // Configura el manejador de punto de entrada para errores de autenticación
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Configura la gestión de sesiones como sin estado
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Permite el acceso a rutas específicas sin autenticación
+                        .requestMatchers("/api/auth/**", "/api/producto/lista").permitAll() // Permite el acceso a rutas específicas sin autenticación
                         .requestMatchers("/api/producto/nuevo").hasRole("ADMIN")
-                        .requestMatchers("/api/producto/lista").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
                 );
         http.authenticationProvider(authenticationProvider()); // Agrega el proveedor de autenticación al objeto HttpSecurity

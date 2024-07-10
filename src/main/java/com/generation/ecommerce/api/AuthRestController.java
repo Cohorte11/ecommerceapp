@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @CrossOrigin("*")
@@ -40,6 +41,11 @@ public class AuthRestController {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtils jwtUtils;
+
+    @GetMapping("/lista")
+    public ResponseEntity<List<Usuario>> listaDeUsuarios() {
+        return new ResponseEntity<>(usuarioService.buscarUsuarios(), HttpStatus.OK);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginRequest) {
@@ -63,6 +69,7 @@ public class AuthRestController {
 
     @PostMapping("/registro")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistroDTO solicitudRegistro) {
+
         // Verifica si el nombre de usuario ya está en uso
         if (usuarioService.existeUsuarioPorUsername(solicitudRegistro.getUsername())) {
             return ResponseEntity.badRequest().body(new String("Error: El username ya está en uso!"));
